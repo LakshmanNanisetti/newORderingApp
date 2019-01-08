@@ -11,9 +11,12 @@ import com.adventnet.persistence.Row;
 public class OrderingThread extends Thread{
 	int nr;
 	OrderMaker om;
-	public OrderingThread(int nr) {
-		nr = this.nr;
-		om = new OrderMaker();
+	private Printer p;
+	public OrderingThread(int nr, Printer p){
+		this.nr = nr;
+		this.p = p;
+		om = new OrderMaker(p);
+		
 	}
 	public void run() {
 		ArrayList<Customer> al = new ArrayList<>();
@@ -24,7 +27,7 @@ public class OrderingThread extends Thread{
 				Row r = (Row) it.next();
 				int id = (Integer)r.get("CUST_ID");
 				int add = (Integer)r.get("CUST_ADD");
-				Customer c = new Customer(id, add, nr, om);
+				Customer c = new Customer(id, add, nr, om, p);
 				c.start();
 				al.add(c);
 			}
@@ -33,12 +36,15 @@ public class OrderingThread extends Thread{
 					c.join();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					p.print("at join");
 				}
 			}
 		} catch (DataAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			p.print(e + "\n at thread making");
+		}catch(Exception e) {
+			p.print("get excep");
 		}
 	}
 }

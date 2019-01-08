@@ -39,7 +39,6 @@ public class Swiggy {
         		r.set("DB_BUSY", false);
         		dobj.addRow(r);
         	}
-        	out.println("data object updated");
             DataAccess.update(dobj);
         } catch (DataAccessException ex) {
             out.println(ex + "\t at init Restaurants\n");
@@ -69,7 +68,7 @@ public class Swiggy {
                 for (int j = 0; j < 3; j++) {
                 	int ind = rand.nextInt(5-j);
                 	itemno = itemnos.remove(ind);
-                	int q = rand.nextInt(2) + 1;
+                	int q = rand.nextInt(2) + 2;
                 	r = new Row("Item");
                 	r.set("ITEM_ID", itemno);
                 	r.set("REST_ID", i);
@@ -77,7 +76,6 @@ public class Swiggy {
                 	dobj.addRow(r);
                 }
         	}
-        	out.println("data object updated\n");
             DataAccess.update(dobj);
         } catch (DataAccessException ex) {
             out.println(ex + "\t at init Restaurants\n");
@@ -113,7 +111,7 @@ public class Swiggy {
            DataAccess.update(dobj);
            
        } catch (DataAccessException ex) {
-           out.println(ex + "\t at updation\n");
+           out.println(ex + "\t at deletion\n");
        }
     }
 
@@ -131,7 +129,6 @@ public class Swiggy {
         		r.set("CUST_ADD", areaNo);
         		dobj.addRow(r);
         	}
-        	out.println("data object updated");
             DataAccess.update(dobj);
         } catch (DataAccessException ex) {
             out.println(ex + "\t at init customers\n");

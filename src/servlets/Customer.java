@@ -20,15 +20,18 @@ import com.adventnet.persistence.Row;
  */
 public class Customer extends Thread{
     private int id, address, noOfItemsInOrder, nr, restId;
-    private HashMap<Integer,Integer> restItems, order;
+    private ArrayList<Integer> restItems;
+    private HashMap<Integer,Integer> order;
     private OrderMaker om;
     private boolean canOrder;
+    private Printer p;
     Random rand;
-    public Customer(int name, int address, int nr, OrderMaker om) {
+    public Customer(int name, int address, int nr, OrderMaker om, Printer p) {
         this.id = name;
         this.address = address;
         this.nr = nr;
         this.om = om;
+        this.p = p;
         rand = new Random();
     }
 
@@ -53,7 +56,7 @@ public class Customer extends Thread{
     		noOfItemsInOrder = rand.nextInt(2) + 1;
     		restId = rand.nextInt(nr) + 1;
     		restItems = getRestaurantItems();
-    		order = initOrder((ArrayList<Integer>)restItems.keySet());
+    		order = initOrder(restItems);
     		if(om.makeOrder(id, restId, order)) {
     			break;
     		}
@@ -73,22 +76,24 @@ public class Customer extends Thread{
         return order;
     }
 
-	private HashMap<Integer,Integer> getRestaurantItems() {
+	private ArrayList<Integer> getRestaurantItems() {
 		// TODO Auto-generated method stub
 		Criteria cond = new Criteria(new Column("Item","REST_ID"),restId,QueryConstants.EQUAL);
-		HashMap<Integer,Integer> items = new HashMap<>();
+		ArrayList<Integer> items = new ArrayList<Integer>();
 		try {
 			DataObject d = DataAccess.get("Item",cond);
 			Iterator it = d.getRows("Item");
 			while(it.hasNext()) {
 				Row r = (Row)it.next();
 				int id = (Integer)r.get("ITEM_ID");
-				int q = (Integer)r.get("ITEM_QUANTITY");
-				items.put(id, q);
+				items.add(id);
 			}
 		} catch (DataAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			p.print("get restitems :" + e);
+		}
+		catch(Exception e) {
+			p.print("normal excep at getRestaurantItems" + e);
 		}
 		return items;
 	}

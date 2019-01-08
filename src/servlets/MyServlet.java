@@ -71,8 +71,25 @@ public class MyServlet extends HttpServlet {
         catch(Exception e){
             e.printStackTrace();
         }
-        out.println("calling work");
+        Printer p = new Printer(out);
         Swiggy.work(out, nc, nr, ndb);
+        
+        OrderingThread ot = new OrderingThread(nr, p);
+        ot.start();
+        try {
+			ot.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        DeliveringThread dt = new DeliveringThread(p);
+        dt.start();
+        try {
+			dt.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     public void initCustomers(int nc){
         for(int i = 1; i <= nc; i++){
