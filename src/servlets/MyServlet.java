@@ -1,11 +1,17 @@
 package servlets;
 
-import java.io.IOException;
+import java.io.*;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import deliveryExecution.DeliveringThread;
+import orderCreation.OrderingThread;
+import util.Printer;
+import util.Swiggy;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -71,8 +77,8 @@ public class MyServlet extends HttpServlet {
         catch(Exception e){
             e.printStackTrace();
         }
-        Printer p = new Printer(out);
-        Swiggy.work(out, nc, nr, ndb);
+        Printer p = new Printer((Writer)out);
+        Swiggy.work(p, nc, nr, ndb);
         
         OrderingThread ot = new OrderingThread(nr, p);
         ot.start();
